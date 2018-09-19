@@ -1,0 +1,20 @@
+{
+  "name": "base-backend",
+  "version": "1.0.0",
+  "description": "NodeJs Backend with JWT User authentication and Object operations",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rayleigh3105/base-backend.git"
+  },
+  "author": "Moritz Vogt",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Rayleigh3105/base-backend/issues"
+  },
+  "homepage": "https://github.com/Rayleigh3105/base-backend#readme"
+}
