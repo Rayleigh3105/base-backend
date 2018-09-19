@@ -1,4 +1,4 @@
-var { User } = require('./../model/user');
+var { User } = require('./../models/user');
 
 
 var authenticate = ( req, res, next ) => {
