@@ -87,7 +87,7 @@ app.post('/item', authenticate, async ( req, res ) => {
             _creator: req.user._id
         });
 
-        item.save().then( ( item ) => {
+        await item.save().then( ( item ) => {
             res.send( item )
         })
     } catch (e) {
@@ -95,6 +95,22 @@ app.post('/item', authenticate, async ( req, res ) => {
 
     }
 });
+
+app.get('/item', authenticate, async ( req, res ) =>{
+    try {
+        Item.find({
+            _creator: req.user._id
+        }).then( ( item ) => {
+            if (!item) {
+                res.status( 404 ).send(" No Items found!")
+            } else {
+                res.send( item );
+            }
+        })
+    } catch (e) {
+        res.status( 400 ).send("Something went wrong during fetching the Items")
+    }
+})
 
 
 // END ROUTES
