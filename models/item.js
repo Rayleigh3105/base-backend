@@ -24,6 +24,10 @@ var ItemSchema = new mongoose.Schema({
         type: String,
         default: null
     },
+    updatedAt: {
+        type: String,
+        default:null
+    },
     _creator: {
         type: mongoose.Schema.Types.ObjectId,
         required: true
