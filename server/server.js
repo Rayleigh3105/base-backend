@@ -75,8 +75,7 @@ app.delete('/users/me/token', authenticate, async (req, res) => {
 app.post('/item', authenticate, async (req, res) => {
     try {
         let date = new Date().getTime();
-        // Todo - Format in Local Date Format
-        let formattedTime = moment(date).format('DD.MM.YYYY');
+        let formattedTime = moment(date).locale("de").format('L, LTS');
 
         let item = new Item({
             headline: req.body.headline,
@@ -113,8 +112,7 @@ app.get('/item', authenticate, (req, res) => {
 
 app.patch('/item/:id', authenticate, (req, res) => {
     let date = new Date().getTime();
-    // Todo - Format in Local Date Format
-    let formattedTime = moment(date).format('DD.MM.YYYY, HH:MM:SS');
+    let formattedTime = moment(date).locale("de").format('L, LTS');
 
     let id = req.params.id;
     let body = _.pick(req.body, ['headline', 'description', 'price']);
