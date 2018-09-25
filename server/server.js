@@ -8,13 +8,19 @@ const _ = require('lodash');
 var moment = require('moment');
 var bodyParser = require('body-parser');
 const {ObjectID} = require('mongodb');
-
+const multer = require('multer');
+const GridFsStorage = require('multer-gridfs-storage');
+const Grid = require('gridfs-stream');
+const methodOverride = require('method-override');
+const path = require('path');
 
 // +++ LOCAL +++
-var {mongoose} = require('./../db/mongoose').mongoose;
+var mongoose = require('./../db/mongoose').mongoose;
+var  conn = require('./../db/mongoose').conn;
 var {User} = require('./../models/user');
 var {Item} = require('./../models/item');
 var {authenticate} = require('./../middleware/authenticate');
+const crypto = require('crypto');
 
 
 var app = express();
@@ -24,6 +30,36 @@ const port = process.env.PORT || 3000;
 
 // Setup Middleware
 app.use(bodyParser.json(), cors({origin: '*'}));
+app.use(methodOverride('_method'));
+
+let gfs;
+
+conn.once('open', function () {
+    // Init stream
+    gfs = Grid(conn.db, mongoose.mongo);
+    gfs.collection('uploads')
+});
+
+// Create storage engine
+const storage = new GridFsStorage({
+    url: process.env.MONGODB_URI || 'mongodb://localhost:27017/BaseBackend',
+    file: (req, file) => {
+        return new Promise((resolve, reject) => {
+            crypto.randomBytes(16, (err, buf) => {
+                if (err) {
+                    return reject(err);
+                }
+                const filename = buf.toString('hex') + path.extname(file.originalname);
+                const fileInfo = {
+                    filename: filename,
+                    bucketName: 'uploads'
+                };
+                resolve(fileInfo);
+            });
+        });
+    }
+});
+const upload = multer({ storage });
 
 // BEGIN ROUTES
 
@@ -72,8 +108,9 @@ app.delete('/users/me/token', authenticate, async (req, res) => {
     }
 });
 
-app.post('/item', authenticate, async (req, res) => {
+app.post('/item', authenticate, upload.single('file'), async (req, res) => {
     try {
+        res.json({ file: req.file()});
         let date = new Date().getTime();
         let formattedTime = moment(date).locale("de").format('L, LTS');
 
