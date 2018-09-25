@@ -28,20 +28,20 @@ app.use(bodyParser.json(), cors({origin: '*'}));
 // BEGIN ROUTES
 
 // POST /users
-app.post('/users', async (req, res) => {
+app.post('/users', async ( req, res ) => {
     try {
         res.header("access-control-expose-headers",
             ",x-auth"
-            + ",Content-Length"
+            +",Content-Length"
         );
-        let body = _.pick(req.body, ['email', 'password']);
-        let user = new User(body);
+        var body = _.pick( req.body, [ 'username', 'password']);
+        var user = new User( body );
 
         await user.save();
         const token = await user.generateAuthToken();
-        res.header('x-auth', token).send(user);
+        res.header( 'x-auth', token ).send( user );
     } catch (e) {
-        res.status(400).send("User can not be created (Invalid Email/Password or User already exists)");
+        res.status(400).send("User can not be created (Invalid Username/Password or User already exists)");
     }
 });
 
@@ -52,13 +52,13 @@ app.post('/users/login', async (req, res) => {
             ",x-auth"
             + ",Content-Length"
         );
-        const body = _.pick(req.body, ['email', 'password']);
+        const body = _.pick(req.body, ['username', 'password']);
 
-        const user = await User.findByCredentials(body.email, body.password);
+        const user = await User.findByCredentials(body.username, body.password);
         const token = await user.generateAuthToken()
         res.header('x-auth', token).send(user);
     } catch (e) {
-        res.status(400).send("Something went wrong during LogIn (Invalid Email/Password), try again");
+        res.status(400).send("Something went wrong during LogIn (Invalid Username/Password), try again");
     }
 });
 
@@ -138,11 +138,12 @@ app.patch('/item/:id', authenticate, (req, res) => {
 
         res.send( item );
     }).catch( ( e ) => {
-        res.status( 400 ).send(`Somethiong went wrong during update of Item with ID: ${id} !`)
+        res.status( 400 ).send(`Something went wrong during update of Item with ID: ${id} !`)
     })
 
 
 });
+
 
 
 // END ROUTES

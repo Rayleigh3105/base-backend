@@ -1,21 +1,15 @@
 const mongoose = require('mongoose');
-const validator = require('validator');
 var bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 
-
 var UserSchema = new mongoose.Schema({
-    email: {
+    username: {
         type: String,
         required: true,
         trim: true,
         minlength: 1,
-        unique: true,
-        validate: {
-            validator: validator.isEmail,
-            message: '{VALUE} is not a valid email'
-        }
+        unique: true
     },
     password: {
         type: String,
@@ -35,16 +29,16 @@ var UserSchema = new mongoose.Schema({
 });
 
 UserSchema.methods.toJSON = function () {
-    var user = this;
-    var userObject = user.toObject();
+    let user = this;
+    let userObject = user.toObject();
 
-    return _.pick(userObject, ['_id', 'email']);
+    return _.pick(userObject, ['_id', 'username']);
 };
 
 UserSchema.methods.generateAuthToken = function () {
-    var user = this;
-    var access = 'auth';
-    var token = jwt.sign({_id: user._id.toHexString(), access}, process.env.JWT_SECRET).toString();
+    let user = this;
+    let access = 'auth';
+    let token = jwt.sign({_id: user._id.toHexString(), access}, process.env.JWT_SECRET).toString();
 
     user.tokens = user.tokens.concat([{access, token}]);
 
@@ -54,8 +48,8 @@ UserSchema.methods.generateAuthToken = function () {
 };
 
 UserSchema.statics.findByToken = function ( token ) {
-    var User = this;
-    var decoded;
+    let User = this;
+    let decoded;
 
     try {
         decoded = jwt.verify( token, process.env.JWT_SECRET );
@@ -70,10 +64,10 @@ UserSchema.statics.findByToken = function ( token ) {
     })
 };
 
-UserSchema.statics.findByCredentials = function ( email, password ) {
-    var User = this;
+UserSchema.statics.findByCredentials = function ( username, password ) {
+    let User = this;
 
-    return User.findOne({ email }).then( ( user ) => {
+    return User.findOne({ username }).then( ( user ) => {
         if ( !user ) {
             return Promise.reject();
         }
@@ -119,6 +113,6 @@ UserSchema.pre( 'save', function ( next ) {
 
 var User = mongoose.model('User', UserSchema);
 
-module.exports = { User };
+module.exports = {User}
 
 
