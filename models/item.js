@@ -33,7 +33,7 @@ var ItemSchema = new mongoose.Schema({
         required: true
     },
     file: {
-        type: buffer
+        type: Object
     }
 });
 
