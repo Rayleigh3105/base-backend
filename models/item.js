@@ -1,4 +1,6 @@
 var mongoose = require('mongoose');
+var  conn = require('./../db/mongoose').conn;
+
 
 // ----------------- MODEL -----------------
 var ItemSchema = new mongoose.Schema({
@@ -35,6 +37,6 @@ var ItemSchema = new mongoose.Schema({
 });
 
 
-var Item = mongoose.model('Item', ItemSchema);
+var Item = conn.model('Item', ItemSchema);
 
 module.exports = { Item }

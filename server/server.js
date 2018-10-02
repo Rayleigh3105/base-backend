@@ -34,11 +34,11 @@ app.use(methodOverride('_method'));
 
 let gfs;
 
-// conn.once('open', function () {
-//     // Init stream
-//     gfs = Grid(conn.db, mongoose.mongo);
-//     gfs.collection('uploads')
-// });
+conn.once('open', function () {
+    // Init stream
+    gfs = Grid(conn.db, mongoose.mongo);
+    gfs.collection('uploads')
+});
 
 // Create storage engine
 const storage = new GridFsStorage({
@@ -60,7 +60,6 @@ const storage = new GridFsStorage({
     }
 });
 const upload = multer({ storage });
-
 
 
 // BEGIN ROUTES
@@ -112,7 +111,6 @@ app.delete('/users/me/token', authenticate, async (req, res) => {
 
 app.post('/item', authenticate, async (req, res) => {
     try {
-        res.json({ file: req.file()});
         let date = new Date().getTime();
         let formattedTime = moment(date).locale("de").format('L, LTS');
 
@@ -178,8 +176,6 @@ app.patch('/item/:id', authenticate, (req, res) => {
         res.status( 400 ).send(`Something went wrong during update of Item with ID: ${id} !`)
     })
 });
-
-
 
 // @route POST /upload
 // @desc  Uploads file to DB

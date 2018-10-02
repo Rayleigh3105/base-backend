@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
 // Connect to Database
-let conn = mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/BaseBackend');
+let conn = mongoose.createConnection(process.env.MONGODB_URI || 'mongodb://localhost:27017/BaseBackend');
 
 module.exports = { mongoose, conn };
 
