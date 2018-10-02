@@ -32,9 +32,6 @@ var ItemSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true
     },
-    file: {
-        type: Object
-    }
 });
 
 

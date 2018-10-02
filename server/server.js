@@ -34,11 +34,11 @@ app.use(methodOverride('_method'));
 
 let gfs;
 
-conn.once('open', function () {
-    // Init stream
-    gfs = Grid(conn.db, mongoose.mongo);
-    gfs.collection('uploads')
-});
+// conn.once('open', function () {
+//     // Init stream
+//     gfs = Grid(conn.db, mongoose.mongo);
+//     gfs.collection('uploads')
+// });
 
 // Create storage engine
 const storage = new GridFsStorage({
@@ -60,83 +60,6 @@ const storage = new GridFsStorage({
     }
 });
 const upload = multer({ storage });
-
-// @route POST /upload
-// @desc  Uploads file to DB
-app.post('/upload', upload.single('file'), (req, res) => {
-    res.json({ file: req.file });
-});
-
-// @route GET /files
-// @desc Display all files in JSON
-app.get('/files', (req, res) => {
-    gfs.files.find().toArray( ( err, files ) => {
-        // Check if files
-        if(!files || files.length === 0) {
-            return res.status(404).json({
-                err: 'No files exists'
-            });
-        }
-        // Files exists
-
-        return res.json( files );
-    });
-});
-
-// @route GET /files/:filename
-// @desc Display single File object
-app.get('/files/:filename', (req, res) => {
-    gfs.files.findOne({
-        filename: req.params.filename
-    }, ( err, file ) => {
-        if(!file) {
-            return res.status(404).json({
-                err: 'No files exists'
-            });
-        }
-
-        // Files exists
-        return res.json( file );
-    })
-});
-
-// @route GET /image/:filename
-// @desc Display image
-app.get('/image/:filename', (req, res) => {
-    gfs.files.findOne({
-        filename: req.params.filename
-    }, ( err, file ) => {
-        if(!file) {
-            return res.status(404).json({
-                err: 'No files exists'
-            });
-        }
-
-        // Check if image
-        if(file.contentType === 'image/jpeg' || file.contentType === 'img/png'){
-            // Read output to browser
-            const readstream = gfs.createReadStream(file.filename);
-            readstream.pipe( res );
-        } else {
-            res.status(404).json({
-                err: 'Not an image of type JPEG/PNG'
-            })
-        }
-    })
-});
-
-// @route DELETE /files/:id
-// @desc Delete file
-app.delete('/files/:filename', ( req, res ) => {
-    gfs.remove({
-        filename: req.params.filename,
-        root: 'uploads'
-    }, (err, gridStore) => {
-        if( err ){
-            return res.status( 404 ).json({ err });
-        }
-    })
-});
 
 
 
@@ -254,15 +177,92 @@ app.patch('/item/:id', authenticate, (req, res) => {
     }).catch( ( e ) => {
         res.status( 400 ).send(`Something went wrong during update of Item with ID: ${id} !`)
     })
+});
 
 
+
+// @route POST /upload
+// @desc  Uploads file to DB
+app.post('/upload', upload.single('file'), (req, res) => {
+    res.json({ file: req.file });
+});
+
+// @route GET /files
+// @desc Display all files in JSON
+app.get('/files', (req, res) => {
+    gfs.files.find().toArray( ( err, files ) => {
+        // Check if files
+        if(!files || files.length === 0) {
+            return res.status(404).json({
+                err: 'No files exists'
+            });
+        }
+        // Files exists
+
+        return res.json( files );
+    });
+});
+
+// @route GET /files/:filename
+// @desc Display single File object
+app.get('/files/:filename', (req, res) => {
+    gfs.files.findOne({
+        filename: req.params.filename
+    }, ( err, file ) => {
+        if(!file) {
+            return res.status(404).json({
+                err: 'No files exists'
+            });
+        }
+
+        // Files exists
+        return res.json( file );
+    })
+});
+
+// @route GET /image/:filename
+// @desc Display image
+app.get('/image/:filename', (req, res) => {
+    gfs.files.findOne({
+        filename: req.params.filename
+    }, ( err, file ) => {
+        if(!file) {
+            return res.status(404).json({
+                err: 'No files exists'
+            });
+        }
+
+        // Check if image
+        if(file.contentType === 'image/jpeg' || file.contentType === 'img/png'){
+            // Read output to browser
+            const readstream = gfs.createReadStream(file.filename);
+            readstream.pipe( res );
+        } else {
+            res.status(404).json({
+                err: 'Not an image of type JPEG/PNG'
+            })
+        }
+    })
+});
+
+// @route DELETE /files/:id
+// @desc Delete file
+app.delete('/files/:filename', ( req, res ) => {
+    gfs.remove({
+        filename: req.params.filename,
+        root: 'uploads'
+    }, (err, gridStore) => {
+        if( err ){
+            return res.status( 404 ).json({ err });
+        }
+    })
 });
 
 // END ROUTES
 
 
 // Start of for NodeJs
-app.listen(port, () => {
+app.listen(port, () =>   {
     console.log(`Started up on port ${port}`);
 });
 
