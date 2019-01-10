@@ -42,7 +42,7 @@ conn.once('open', function () {
 
 // Create storage engine
 const storage = new GridFsStorage({
-    url: process.env.MONGODB_URI || 'mongodb://localhost:27017/BaseBackend',
+    url: process.env.MONGODB_URI || 'mongodb://localhost:27017/Camel24',
     file: (req, file) => {
         return new Promise((resolve, reject) => {
             crypto.randomBytes(16, (err, buf) => {

@@ -1,12 +1,12 @@
 {
   "test": {
     "PORT": 3000,
-    "MONGODB_URI": "mongodb://localhost:27017/BaseBackendTest",
+    "MONGODB_URI": "mongodb://localhost:27017/Camel24",
     "JWT_SECRET": "asdlfjalsdjlasjfl2340324802340"
   },
   "development": {
     "PORT": 3000,
-    "MONGODB_URI": "mongodb://localhost:27017/BaseBackend",
+    "MONGODB_URI": "mongodb://localhost:27017/Camel24",
     "JWT_SECRET": "sadflkasfdjlkasjfdlk34o98r5u90"
   }
 }
