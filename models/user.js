@@ -94,10 +94,10 @@ UserSchema.statics.findByToken = function ( token ) {
     })
 };
 
-UserSchema.statics.findByCredentials = function ( username, password ) {
+UserSchema.statics.findByCredentials = function ( email, password ) {
     let User = this;
 
-    return User.findOne({ username }).then( ( user ) => {
+    return User.findOne({ email }).then( ( user ) => {
         if ( !user ) {
             return Promise.reject();
         }
@@ -116,7 +116,7 @@ UserSchema.statics.findByCredentials = function ( username, password ) {
 
 // Instance Method
 UserSchema.methods.removeToken = function ( token ) {
-    var user = this;
+    let user = this;
 
     // Removes Token
     return user.update({

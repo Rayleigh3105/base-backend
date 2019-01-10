@@ -1,4 +1,4 @@
-var mongoose = require('mongoose');
+let mongoose = require('mongoose');
 
 // Mongoose uses now Promises
 mongoose.Promise = global.Promise;
