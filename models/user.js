@@ -1,22 +1,50 @@
 const mongoose = require('mongoose');
-var  conn = require('./../db/mongoose').conn;
+let  conn = require('./../db/mongoose').conn;
+const validator = require('validator');
 
-var bcrypt = require('bcryptjs');
+
+let bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 
-var UserSchema = new mongoose.Schema({
-    username: {
+let UserSchema = new mongoose.Schema({
+    email: {
         type: String,
         required: true,
         trim: true,
-        minlength: 1,
-        unique: true
+        min: 1,
+        unique: true,
+        validate: {
+            isAsync: true,
+            validator: validator.isEmail,
+            message: '{VALUE} is not a valid email'
+        }
+    },
+    firstName: {
+        type: String,
+        required: true,
+        trim: true,
+        min: 1,
+        unique: false
+    },
+    lastName: {
+        type: String,
+        required: true,
+        trim: true,
+        min: 1,
+        unique: false
     },
     password: {
         type: String,
         require: true,
         minlength: 6
+    },
+    kndnumber: {
+        type: String,
+        require: true,
+        min: 5,
+        max: 5,
+        unique: true
     },
     tokens: [{
         access: {
@@ -99,7 +127,7 @@ UserSchema.methods.removeToken = function ( token ) {
 };
 
 UserSchema.pre( 'save', function ( next ) {
-    var user = this;
+    let user = this;
 
     if ( user.isModified( 'password')) {
         bcrypt.genSalt( 10, ( err, salt ) => {
@@ -113,7 +141,7 @@ UserSchema.pre( 'save', function ( next ) {
     }
 });
 
-var User = conn.model('User', UserSchema);
+let User = conn.model('User', UserSchema);
 
 module.exports = {User}
 
